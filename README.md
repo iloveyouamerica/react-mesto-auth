@@ -30,6 +30,6 @@
 - Используем Fetch и Promise для взаимодействия с сервером (REST API).
 
 #### Ссылки
-[GitHub Pages](https://iloveyouamerica.github.io/mesto-react-auth "GitHub Pages")
+[GitHub Pages](https://iloveyouamerica.github.io/react-mesto-auth/ "GitHub Pages")
 
 [Макет Figma](https://www.figma.com/file/2cn9N9jSkmxD84oJik7xL7/JavaScript.-Sprint-4?node-id=0%3A1 "Макет Figma")
