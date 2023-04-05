@@ -9,8 +9,14 @@ import { CurrentUserContext } from '../contextst/currentUserContext.js';
 import EditProfilePopup from './EditProfilePopup.js';
 import EditAvatarPopup from './EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Login from './Login.js';
+import Register from './Register.js';
+import ProtectedRouteElement from './ProtectedRoute.js';
 
 function App() {
+
+  const loggedIn = true;
 
   // константы состояния для попапов
 
@@ -159,7 +165,26 @@ function App() {
       <div className="App">
         <div className="wrapper">
           <Header />
-          <Main 
+          <Routes>
+            <Route path="/" element={loggedIn ? <Navigate to="/mesto" replace /> : <Navigate to="/sign-in" replace />} />
+            <Route
+              path="/mesto"
+              element={<ProtectedRouteElement
+              element={Main}
+              loggedIn={loggedIn}
+              cards={cards}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onEditAvatar={handleEditAvatarClick}
+              onCardClick={setSelectedCard}
+              onCardLike={handleCardLike}
+              onCardDelete={handleCardDelete}
+              onClose={closeAllPopups}
+              />} />
+            <Route path="/sign-in" element={<Login />} />
+            <Route path="/sign-up" element={<Register />} />
+          </Routes>
+          {/* <Main 
             cards={cards}
             onEditProfile={handleEditProfileClick}
             onAddPlace={handleAddPlaceClick}
@@ -167,51 +192,10 @@ function App() {
             onCardClick={setSelectedCard}
             onCardLike={handleCardLike}
             onCardDelete={handleCardDelete}
-            onClose={closeAllPopups} />
+            onClose={closeAllPopups} /> */}
           <Footer />
-          {/* <PopupWithForm
-            title="Редактировать профиль"
-            name="profile-edit"
-            buttonText="Сохранить"
-            isOpen={isEditProfilePopupOpen}
-            onClose={closeAllPopups}>
-            <label>
-              <input type="text" name="username" className="form__input" id="input-name" placeholder="Имя" minLength="2" maxLength="40" required />
-              <span className="form__error-message input-name-error"></span>
-            </label>
-            <label>
-              <input type="text" name="userinfo" className="form__input" id="input-about" placeholder="О себе" minLength="2" maxLength="200" required />
-              <span className="form__error-message input-about-error"></span>
-            </label>
-          </PopupWithForm> */}
           <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
-          {/* <PopupWithForm
-            title="Новое место"
-            name="card-add"
-            buttonText="Создать"
-            isOpen={isAddPlacePopupOpen}
-            onClose={closeAllPopups}>
-            <label>
-              <input type="text" name="name" className="form__input" id="input-place-name" placeholder="Название" minLength="2" maxLength="30" required />
-              <span className="form__error-message input-place-name-error"></span>
-            </label>
-            <label>
-              <input type="url" name="link" className="form__input" id="input-place-link" placeholder="Ссылка на картинку" required />
-              <span className="form__error-message input-place-link-error"></span>
-            </label>
-          </PopupWithForm> */}
           <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
-          {/* <PopupWithForm
-            title="Обновить аватар"
-            name="avatar-edit"
-            buttonText="Сохранить"
-            isOpen={isEditAvatarPopupOpen}
-            onClose={closeAllPopups}>
-            <label>
-              <input type="url" name="link" className="form__input" id="input-avatar-link" placeholder="Ссылка на аватар" required />
-              <span className="form__error-message input-avatar-link-error"></span>
-            </label>
-          </PopupWithForm> */}
           <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
           <PopupWithForm title="Вы уверены?" name="confirm" buttonText="Да"></PopupWithForm>
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
