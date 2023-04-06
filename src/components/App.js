@@ -16,6 +16,7 @@ import ProtectedRouteElement from './ProtectedRoute.js';
 
 function App() {
 
+  // переменная для понимания факта залогиненного пользователя
   const loggedIn = true;
 
   // константы состояния для попапов
