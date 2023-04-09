@@ -12,7 +12,7 @@
 /* Header ----------------------------------------------------------*/
 @import url(./blocks/header/header.css);
 @import url(./blocks/header/__logo/header__logo.css);
-
+@import url(./blocks/header/__link/header__link.css);
 
 /* Main ------------------------------------------------------------*/
 @import url(./blocks/main/main.css);
@@ -54,6 +54,14 @@
 @import url(./blocks/popup/__form/popup__form.css);
 @import url(./blocks/popup/_opacity_dark/popup_opacity_dark.css);
 
+/*InfoTooltip ------------------------------------------------------*/
+@import url(./blocks/info-tooltip/info-tooltip.css);
+@import url(./blocks/info-tooltip/__img/info-tooltip__img.css);
+@import url(./blocks/info-tooltip/__title/info-tooltip__title.css);
+
+/*блок для форм, который всё содержимое сводит в центр*/
+@import url(./blocks/form-container/form-container.css);
+
 /* Форма редактирования профиля ------------------------------------*/
 @import url(./blocks/form/form.css);
 @import url(./blocks/form/__title/form__title.css);
@@ -63,6 +71,11 @@
 @import url(./blocks/form/__error-message/form__error-message.css);
 @import url(./blocks/form/__submit/form__submit.css);
 @import url(./blocks/form/__submit/_inactive/form__submit_inactive.css);
+@import url(./blocks/form/_auth/form_auth.css);
+@import url(./blocks/form/__title/_auth/form__title_auth.css);
+@import url(./blocks/form/__input/_auth/form__input_auth.css);
+@import url(./blocks/form/__submit/_auth/form__submit_auth.css);
+@import url(./blocks/form/__link/form__link.css);
 
 
 /* Footer ----------------------------------------------------------*/

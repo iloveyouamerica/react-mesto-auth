@@ -13,11 +13,12 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './Login.js';
 import Register from './Register.js';
 import ProtectedRouteElement from './ProtectedRoute.js';
+import InfoTooltip from './InfoTooltip.js';
 
 function App() {
 
   // переменная для понимания факта залогиненного пользователя
-  const loggedIn = true;
+  const loggedIn = false;
 
   // константы состояния для попапов
 
@@ -25,6 +26,7 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState({});
+  const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = React.useState(true);
 
   // создаём стейт currentUSer для хранения данных о пользователе (ПР11)
   const [currentUser, setCurrentUser] = useState({});
@@ -85,6 +87,7 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setSelectedCard({});
+    setIsInfoTooltipPopupOpen(false);
   }
 
   // обработчик лайка карточки
@@ -166,13 +169,27 @@ function App() {
       <div className="App">
         <div className="wrapper">
           <Header />
-          <Routes>
-            <Route path="/" element={loggedIn ? <Navigate to="/mesto" replace /> : <Navigate to="/sign-in" replace />} />
-            <Route
-              path="/mesto"
-              element={<ProtectedRouteElement
-              element={Main}
-              loggedIn={loggedIn}
+          <main className="main">
+            <Routes>
+              <Route path="/" element={loggedIn ? <Navigate to="/mesto" replace /> : <Navigate to="/sign-in" replace />} />
+              <Route
+                path="/mesto"
+                element={<ProtectedRouteElement
+                element={Main}
+                loggedIn={loggedIn}
+                cards={cards}
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onEditAvatar={handleEditAvatarClick}
+                onCardClick={setSelectedCard}
+                onCardLike={handleCardLike}
+                onCardDelete={handleCardDelete}
+                onClose={closeAllPopups}
+                />} />
+              <Route path="/sign-in" element={<Login />} />
+              <Route path="/sign-up" element={<Register />} />
+            </Routes>
+            {/* <Main 
               cards={cards}
               onEditProfile={handleEditProfileClick}
               onAddPlace={handleAddPlaceClick}
@@ -180,26 +197,15 @@ function App() {
               onCardClick={setSelectedCard}
               onCardLike={handleCardLike}
               onCardDelete={handleCardDelete}
-              onClose={closeAllPopups}
-              />} />
-            <Route path="/sign-in" element={<Login />} />
-            <Route path="/sign-up" element={<Register />} />
-          </Routes>
-          {/* <Main 
-            cards={cards}
-            onEditProfile={handleEditProfileClick}
-            onAddPlace={handleAddPlaceClick}
-            onEditAvatar={handleEditAvatarClick}
-            onCardClick={setSelectedCard}
-            onCardLike={handleCardLike}
-            onCardDelete={handleCardDelete}
-            onClose={closeAllPopups} /> */}
-          <Footer />
+              onClose={closeAllPopups} /> */}
+          </main>
+          { loggedIn && <Footer />}
           <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
           <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
           <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
           <PopupWithForm title="Вы уверены?" name="confirm" buttonText="Да"></PopupWithForm>
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+          <InfoTooltip isOpen={isInfoTooltipPopupOpen} onClose={closeAllPopups} />
         </div>
       </div>
     </CurrentUserContext.Provider>

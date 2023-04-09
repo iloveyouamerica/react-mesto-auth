@@ -1,0 +1,12 @@
+.form__link {
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  font-family: 'Inter', Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16.94px;
+  padding-top: 15px;
+}

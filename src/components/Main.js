@@ -10,7 +10,8 @@ function Main(props) {
   //console.log(currentUser);
 
   return (
-    <main className="main">
+    /* <main className="main"></> */
+    <>
       <section className="profile">
         <button
           type="button"
@@ -21,14 +22,14 @@ function Main(props) {
           <img src={currentUser.avatar} alt="Аватар пользователя" className="profile__image" />
         </button>
         <div className="profile__text-wrapper">
-          <h1 className="profile__name">{currentUser.name}{/* <!--Жак-Ив Кусто--> */}</h1>
+          <h1 className="profile__name">{currentUser.name}</h1>
           <button
             type="button"
             className="profile__button-edit button"
             aria-label="Редактировать профиль"
             id="edit-btn"
             onClick={props.onEditProfile}></button>
-          <p className="profile__about">{currentUser.about}{/* <!--Исследователь океана--> */}</p>
+          <p className="profile__about">{currentUser.about}</p>
         </div>
         <button 
           type="button"
@@ -54,7 +55,7 @@ function Main(props) {
           ))}
         </ul>
       </section>
-    </main>
+    </>
   );
 }
 
