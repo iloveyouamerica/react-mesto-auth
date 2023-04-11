@@ -248,8 +248,17 @@ function App() {
     // удалим токен пользователя из localStorage
     localStorage.clear('token');
 
+    // установим loggeIn в false
+    setLoggedIn(false);
+
     // перелинкуем пользователя на страницу авторизации
     navigate("/sign-in", {replace: true});
+
+    // запроем мобильное меню (если мы в мобильной версии)
+    setMobileMenuVisible(false);
+
+    // восстановим вид бургера для копки мобильного меню
+    setMobileMenuButtonClick(false);
   }
 
   // обработчик появления мобильного меню
@@ -258,16 +267,11 @@ function App() {
     mobileMenuButtonClick ? setMobileMenuButtonClick(false) : setMobileMenuButtonClick(true);
   }
 
-  /* // обработчик изменения вида кнопки мобильного меню
-  function handleChangeMobileMenuButton() {
-    setMobileMenuButtonClick(true);
-  } */
-
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="App">
         <div className="wrapper">
-          <MobileMenu state={mobileMenuVisible} email={userEmail} onLogOut={handleLogOut} />
+          {loggedIn && <MobileMenu state={mobileMenuVisible} email={userEmail} onLogOut={handleLogOut} />}
           <Header 
             email={userEmail}
             onLogOut={handleLogOut}
