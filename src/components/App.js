@@ -49,8 +49,8 @@ function App() {
   // стейт для карточек
   const [cards, setCards] = React.useState([]);
 
-  // функция проверки токена
-  function tokenCheck() {
+  // useEffect для проверки токена
+  useEffect(() => {
     // если у пользователя в localStorage есть токен, то проверим действующий он или нет
     const token = localStorage.getItem('token');
     //console.log(`token: ${token}`);
@@ -66,43 +66,42 @@ function App() {
         })
         .catch(err => console.log(err));
     }
-  }
-
-  // useEffect для проверки токена
-  useEffect(() => {
-    tokenCheck();
   }, [loggedIn]);
 
-  //создаём эффект при монтировании и вызываем api.getUserInfo для обновления стейт-переменной currentUser
+  //создаём эффект при измении loggedIn (если пользователь авторизуется)
   useEffect(() => {
-    api.getUserInfo() // запрос на получение информации о пользователе
-      .then((userInfo) => {
-        //console.log(userInfo, "API");
-        setCurrentUser(userInfo);
-        //console.log(currentUser);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+    if(loggedIn) {
+      api.getUserInfo() // запрос на получение информации о пользователе
+        .then((userInfo) => {
+          //console.log(userInfo, "API");
+          setCurrentUser(userInfo);
+          //console.log(currentUser);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [loggedIn]);
 
 // создаём эффект первичного монтирования карточек
   useEffect(() => {
-    api.getCards() // запрос на получение карточек
-      .then((dataCards) => {
-        //console.log(dataCards);
-        setCards(dataCards.map((item) => ({
-          _id: item._id,
-          name: item.name,
-          link: item.link,
-          likes: item.likes,
-          owner: item.owner,
-        })));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-}, []);
+    if(loggedIn) {
+      api.getCards() // запрос на получение карточек
+        .then((dataCards) => {
+          //console.log(dataCards);
+          setCards(dataCards.map((item) => ({
+            _id: item._id,
+            name: item.name,
+            link: item.link,
+            likes: item.likes,
+            owner: item.owner,
+          })));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [loggedIn]);
 
   // обработчики кнопок для открытия попапов
 

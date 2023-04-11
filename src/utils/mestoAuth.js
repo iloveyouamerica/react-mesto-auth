@@ -32,10 +32,6 @@ export function register(email, password) {
         return Promise.reject(new Error("ошибка 400 - некорректно заполнено одно из полей "));
       }
       return Promise.reject(new Error("Ошибка регистрации"));
-    })
-    .then((data) => {
-      console.log("данные из второго then (mestoAuth): ", data);
-      return data;
     });
 }
 
@@ -60,10 +56,6 @@ export function authorize(email, password) {
       }
       // в ином случае
       return Promise.reject(new Error("Ошибка авторизации"));
-    })
-    .then((data) => {
-      //console.log(data);
-      return data;
     });
 }
 
