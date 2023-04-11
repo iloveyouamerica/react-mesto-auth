@@ -14,3 +14,10 @@
   justify-content: space-between;
   align-items: center;
 }
+
+@media screen and (max-width: 618px) {
+  .info-tooltip {
+    width: 100%;
+    grid-column: 1;
+  }
+}

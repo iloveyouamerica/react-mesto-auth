@@ -1,12 +1,39 @@
 // Register.js или маршрут sign-up
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 function Register(props) {
+
+  const [formValue, setFormValue] = React.useState({
+    email: '',
+    password: '',
+  });
+
+  function handleInputChange(event) {
+    // деструктурируем объект event.target
+    const {name, value} = event.target;
+    //console.log(`Name: ${name}, Value: ${value}`);
+
+    setFormValue({
+      ...formValue,
+      [name]: value
+    });
+  }
 
   // функция обработки отправки формы
   function handleFormSubmit(event) {
     event.preventDefault();
     console.log("запрос на сервер с регистрацией");
+
+    if(!formValue.email || !formValue.password) {
+      return;
+    }
+
+    // вызвать функцию регистрации пользователя
+    props.onRegister(formValue.email, formValue.password);
+
+    // очистить форму
+    setFormValue({email: '', password: ''});
   }
 
   return(
@@ -21,6 +48,8 @@ function Register(props) {
             placeholder="Email"
             minLength="2"
             maxLength="30"
+            onChange={handleInputChange}
+            value={formValue.email}
             required />
         </label>
         <label>
@@ -31,6 +60,8 @@ function Register(props) {
             placeholder="Пароль"
             minLength="2"
             maxLength="30"
+            onChange={handleInputChange}
+            value={formValue.password}
             required />
         </label>
         <button type="submit" className="form__submit form__submit_auth">Зарегистрироваться</button>

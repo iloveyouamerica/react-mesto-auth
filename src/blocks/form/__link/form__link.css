@@ -10,3 +10,9 @@
   line-height: 16.94px;
   padding-top: 15px;
 }
+
+@media screen and (max-width: 320px) {
+  .form__link {
+    padding-top: 20px;
+  }
+}

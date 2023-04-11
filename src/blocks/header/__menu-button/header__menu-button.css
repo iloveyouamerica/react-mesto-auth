@@ -1,0 +1,19 @@
+.header__menu-button {
+  width: 24px;
+  height: 21px;
+  border: none;
+  background-color: transparent;
+  background-image: url(../../../images/header/burger-menu.png);
+  display: none;
+  cursor: pointer;
+}
+
+.header__menu-button:hover {
+  opacity: .6;
+}
+
+@media screen and (max-width: 660px) {
+  .header__menu-button {
+    display: block;
+  }
+}

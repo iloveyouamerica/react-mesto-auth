@@ -6,3 +6,10 @@
   line-height: 29px;
   text-align: center;
 }
+
+@media screen and (max-width: 610px) {
+  .info-tooltip__title {
+    font-size: 20px;
+    line-height: 24px;
+  }
+}

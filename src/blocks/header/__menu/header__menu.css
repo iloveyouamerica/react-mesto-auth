@@ -1,0 +1,12 @@
+.header__menu {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+}
+
+@media screen and (max-width: 660px) {
+  .header__menu {
+    display: none;
+  }
+}
+

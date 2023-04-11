@@ -1,11 +1,37 @@
 // Login.js component /sign-in
 
-function Login(){
+import React from 'react';
+import * as mestoAuth from '../utils/mestoAuth.js';
+
+function Login(props){
+
+  const [formValue, setFormValue] = React.useState({
+    email: '',
+    password: ''
+  });
+
+  function handleInputChange(event) {
+    // деструктурируем объект event.target
+    const {name, value} = event.target;
+    //console.log(`Name: ${name}, Value: ${value}`);
+
+    setFormValue({
+      ...formValue,
+      [name]: value
+    });
+  }
 
   // функция обработки отправки формы
   function handleFormSubmit(event) {
     event.preventDefault();
     console.log("запрос на сервер с авторизацией");
+
+    if(!formValue.email || !formValue.password) {
+      return;
+    }
+
+    // вызываем функцию авторизации
+    props.onLogin(formValue.email, formValue.password);
   }
 
   return(
@@ -20,6 +46,8 @@ function Login(){
             placeholder="Email"
             minLength="2"
             maxLength="30"
+            value={formValue.email}
+            onChange={handleInputChange}
             required />
         </label>
         <label>
@@ -30,6 +58,8 @@ function Login(){
             placeholder="Пароль"
             minLength="2"
             maxLength="30"
+            value={formValue.password}
+            onChange={handleInputChange}
             required />
         </label>
         <button type="submit" className="form__submit form__submit_auth">Войти</button>

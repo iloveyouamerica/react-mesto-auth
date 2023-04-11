@@ -9,30 +9,69 @@ import { CurrentUserContext } from '../contextst/currentUserContext.js';
 import EditProfilePopup from './EditProfilePopup.js';
 import EditAvatarPopup from './EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom';
 import Login from './Login.js';
 import Register from './Register.js';
 import ProtectedRouteElement from './ProtectedRoute.js';
 import InfoTooltip from './InfoTooltip.js';
+import * as mestoAuth from '../utils/mestoAuth.js';
+import toolTipSuccess from '../images/popup-overlay/tooltip-success.png';
+import toolTipFail from '../images/popup-overlay/tooltip-fail.png';
+import MobileMenu from './MobileMenu.js';
 
 function App() {
 
   // переменная для понимания факта залогиненного пользователя
-  const loggedIn = false;
+  const [loggedIn, setLoggedIn] = React.useState(false);
+
+  // хук для навигации
+  const navigate = useNavigate();
+
+  // переменная видимости мобильного меню
+  const [mobileMenuVisible, setMobileMenuVisible] = React.useState(false);
+
+  // переменная изменения кнопки мобильного меню с крестика на бургер и обратно
+  const [mobileMenuButtonClick, setMobileMenuButtonClick] = React.useState(false);
 
   // константы состояния для попапов
-
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState({});
-  const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = React.useState(true);
+  const [isInfoTooltipPopup, setIsInfoTooltipPopup] = React.useState({isOpen: false, title: '', image: ''});
 
   // создаём стейт currentUSer для хранения данных о пользователе (ПР11)
   const [currentUser, setCurrentUser] = useState({});
 
+  // стейт для хранения email авторизованного пользователя
+  const [userEmail, setUserEmail] = React.useState('');
+
   // стейт для карточек
   const [cards, setCards] = React.useState([]);
+
+  // функция проверки токена
+  function tokenCheck() {
+    // если у пользователя в localStorage есть токен, то проверим действующий он или нет
+    const token = localStorage.getItem('token');
+    //console.log(`token: ${token}`);
+    if(token) {
+      //console.log(`token: ${token}`);
+      mestoAuth.checkToken(token)
+        .then((res) => { // res содержит поле объект data, в котором есть поля _id и email
+          //console.log(res);
+          setLoggedIn(true);
+          navigate("/mesto", {replace: true});
+          setUserEmail(res.data.email);
+          //console.log(userEmail);
+        })
+        .catch(err => console.log(err));
+    }
+  }
+
+  // useEffect для проверки токена
+  useEffect(() => {
+    tokenCheck();
+  }, [loggedIn]);
 
   //создаём эффект при монтировании и вызываем api.getUserInfo для обновления стейт-переменной currentUser
   useEffect(() => {
@@ -87,7 +126,7 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setSelectedCard({});
-    setIsInfoTooltipPopupOpen(false);
+    setIsInfoTooltipPopup({isOpen: false, title: '', image: ''});
   }
 
   // обработчик лайка карточки
@@ -164,11 +203,76 @@ function App() {
       .catch((err) => console.log(err));
   }
 
+  // обработчик для регистрации пользователя
+  function handleRegister(email, password) {
+
+    // вызываем функцию регистрации нового пользователя
+    mestoAuth.register(email, password)
+      .then((res) => {
+        //console.log(res);
+        setIsInfoTooltipPopup({isOpen: true, title: 'Вы успешно зарегистрировались!', image: toolTipSuccess});
+        // закроем попап tooltip через 3 секунды
+        setTimeout(() => closeAllPopups(), 3000);
+        navigate('/sign-in', {replace: true});
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsInfoTooltipPopup({isOpen: true, title: 'Что-то пошло не так! Попробуйте ещё раз.', image: toolTipFail});
+        setTimeout(() => closeAllPopups(), 3000);
+      });
+  }
+
+  // обработчик для авторизации пользователя
+  function handleLogin(email, password) {
+    //console.log(`App.js ${email}, ${password}`);
+
+    // вызываем функцию авторизации
+    mestoAuth.authorize(email, password)
+      .then((data) => {
+        //console.log(data);
+        localStorage.setItem('token', data.token);
+        setLoggedIn(true);
+        navigate('/', {replace: true});
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsInfoTooltipPopup({isOpen: true, title: 'Что-то пошло не так! Попробуйте ещё раз.', image: toolTipFail});
+        setTimeout(() => closeAllPopups(), 3000);
+      });
+  }
+
+  // обработчик кнопки выхода из учётной записи
+  function handleLogOut(event) {
+    event.preventDefault();
+    
+    // удалим токен пользователя из localStorage
+    localStorage.clear('token');
+
+    // перелинкуем пользователя на страницу авторизации
+    navigate("/sign-in", {replace: true});
+  }
+
+  // обработчик появления мобильного меню
+  function handleMobileMenuVisible() {
+    mobileMenuVisible ? setMobileMenuVisible(false) : setMobileMenuVisible(true);
+    mobileMenuButtonClick ? setMobileMenuButtonClick(false) : setMobileMenuButtonClick(true);
+  }
+
+  /* // обработчик изменения вида кнопки мобильного меню
+  function handleChangeMobileMenuButton() {
+    setMobileMenuButtonClick(true);
+  } */
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="App">
         <div className="wrapper">
-          <Header />
+          <MobileMenu state={mobileMenuVisible} email={userEmail} onLogOut={handleLogOut} />
+          <Header 
+            email={userEmail}
+            onLogOut={handleLogOut}
+            onVisible={handleMobileMenuVisible}
+            menuBtn={mobileMenuButtonClick} />
           <main className="main">
             <Routes>
               <Route path="/" element={loggedIn ? <Navigate to="/mesto" replace /> : <Navigate to="/sign-in" replace />} />
@@ -186,8 +290,8 @@ function App() {
                 onCardDelete={handleCardDelete}
                 onClose={closeAllPopups}
                 />} />
-              <Route path="/sign-in" element={<Login />} />
-              <Route path="/sign-up" element={<Register />} />
+              <Route path="/sign-in" element={<Login onLogin={handleLogin} />} />
+              <Route path="/sign-up" element={<Register onRegister={handleRegister} />} />
             </Routes>
             {/* <Main 
               cards={cards}
@@ -199,13 +303,13 @@ function App() {
               onCardDelete={handleCardDelete}
               onClose={closeAllPopups} /> */}
           </main>
-          { loggedIn && <Footer />}
+          <Footer />
           <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
           <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
           <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
           <PopupWithForm title="Вы уверены?" name="confirm" buttonText="Да"></PopupWithForm>
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-          <InfoTooltip isOpen={isInfoTooltipPopupOpen} onClose={closeAllPopups} />
+          <InfoTooltip state={isInfoTooltipPopup} onClose={closeAllPopups} />
         </div>
       </div>
     </CurrentUserContext.Provider>

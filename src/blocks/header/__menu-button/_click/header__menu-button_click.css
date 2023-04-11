@@ -1,0 +1,6 @@
+.header__menu-button_click {
+  background-image: url(../../../../images/popup-overlay/close-btn.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
